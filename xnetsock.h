@@ -19,6 +19,8 @@ public:
 
     void OnRead(QByteArray data);
 
+    void WriteData();
+
 private:
 
     QString m_ip;

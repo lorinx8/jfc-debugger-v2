@@ -121,5 +121,19 @@ void MainWindow::on_x_connect(bool ret)
     }
 }
 
+/*!
+ * \brief 点击base角度运行到
+ */
+void MainWindow::on_pushButton_baseAngelRun_clicked()
+{
+
+}
 
 
+/*!
+ * \brief 点击neck角度运行到
+ */
+void MainWindow::on_pushButton_neckAngleRun_clicked()
+{
+
+}

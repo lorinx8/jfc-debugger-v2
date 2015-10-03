@@ -41,6 +41,9 @@ void XLogic::OnDisConnected(bool ret)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 界面调用
+
 void XLogic::ConnectHost(const QString &ip, quint16 port)
 {
     m_pXNetSock->Connect(ip, port);
@@ -57,7 +60,6 @@ void XLogic::ConnectHost()
 }
 
 
-
 void XLogic::setCurIp(const QString & ip)
 {
     m_curIp = ip;
@@ -67,3 +69,16 @@ void XLogic::setCurPort(quint16 port)
 {
     m_curPort = port;
 }
+
+
+void XLogic::BaseAngleRunTo(float angle)
+{
+
+}
+
+void XLogic::NeckAngleRunTo(float angle)
+{
+
+}
+
+

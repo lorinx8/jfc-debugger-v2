@@ -18,10 +18,14 @@ public:
     void OnDisConnected(bool ret);
     void OnMessage(quint16 cmd, QByteArray payload);
     // 供网络层的回调结束
+
 public:
+    // 界面调用
     void ConnectHost(const QString &ip, quint16 port);
     void ConnectHost();
     void DisConnectHost();
+    void BaseAngleRunTo(float angle);
+    void NeckAngleRunTo(float angle);
 signals:
 
     // 服务器连接成功后发出的信号

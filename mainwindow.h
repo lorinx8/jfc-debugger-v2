@@ -32,6 +32,10 @@ private slots:
 
     void on_pushButton_srvDisConnect_clicked();
 
+    void on_pushButton_baseAngelRun_clicked();
+
+    void on_pushButton_neckAngleRun_clicked();
+
 private:
 
     Ui::MainWindow *ui;
