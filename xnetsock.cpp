@@ -54,3 +54,8 @@ void XNetSock::OnRead(QByteArray data)
         m_pLogic->OnMessage(cmd, payload);
     }
 }
+
+void XNetSock::WriteData(char cmd1, char cmd2, QByteArray payload)
+{
+
+}
