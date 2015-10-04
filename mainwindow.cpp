@@ -121,6 +121,7 @@ void MainWindow::on_x_connect(bool ret)
     }
 }
 
+
 /*!
  * \brief 点击base角度运行到
  */
@@ -136,4 +137,22 @@ void MainWindow::on_pushButton_baseAngelRun_clicked()
 void MainWindow::on_pushButton_neckAngleRun_clicked()
 {
 
+}
+
+// 这个必须是0.375的倍数，若被编辑后，应修改为最接近0.375的倍数值
+void MainWindow::on_doubleSpinBox_baseAngle_editingFinished()
+{
+    double value = ui->doubleSpinBox_baseAngle->text().toDouble();
+    int c = (int)(value / 0.375f);
+    double v = c * 0.375;
+    ui->doubleSpinBox_baseAngle->setValue(v);
+}
+
+// 这个必须是0.9的倍数，若被编辑后，应修改为最接近0.9的倍数值
+void MainWindow::on_doubleSpinBox_neckAngle_editingFinished()
+{
+    double value = ui->doubleSpinBox_neckAngle->text().toDouble();
+    int c = (int)(value / 0.9f);
+    double v = c * 0.9;
+    ui->doubleSpinBox_neckAngle->setValue(v);
 }

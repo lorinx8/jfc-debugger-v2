@@ -36,6 +36,10 @@ private slots:
 
     void on_pushButton_neckAngleRun_clicked();
 
+    void on_doubleSpinBox_baseAngle_editingFinished();
+
+    void on_doubleSpinBox_neckAngle_editingFinished();
+
 private:
 
     Ui::MainWindow *ui;

@@ -19,7 +19,7 @@ public:
 
     void OnRead(QByteArray data);
 
-    void WriteData();
+    void WriteData(char cmd1, char cmd2, QByteArray payload);
 
 private:
 

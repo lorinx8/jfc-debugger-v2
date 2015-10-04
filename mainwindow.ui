@@ -173,7 +173,7 @@
       <cstring>lineEdit_srvIp</cstring>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="doubleSpinBox">
+    <widget class="QDoubleSpinBox" name="doubleSpinBox_baseAngle">
      <property name="geometry">
       <rect>
        <x>70</x>
@@ -195,7 +195,7 @@
       <double>90.000000000000000</double>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+    <widget class="QDoubleSpinBox" name="doubleSpinBox_neckAngle">
      <property name="geometry">
       <rect>
        <x>70</x>
@@ -441,8 +441,8 @@
   <tabstop>lineEdit_srvPort</tabstop>
   <tabstop>pushButton_srvConnect</tabstop>
   <tabstop>pushButton_srvDisConnect</tabstop>
-  <tabstop>doubleSpinBox</tabstop>
-  <tabstop>doubleSpinBox_2</tabstop>
+  <tabstop>doubleSpinBox_baseAngle</tabstop>
+  <tabstop>doubleSpinBox_neckAngle</tabstop>
   <tabstop>pushButton_baseAngelRun</tabstop>
   <tabstop>pushButton_neckAngleRun</tabstop>
   <tabstop>lineEdit_CropX</tabstop>
