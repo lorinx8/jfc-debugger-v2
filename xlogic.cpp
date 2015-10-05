@@ -5,6 +5,7 @@ XLogic::XLogic()
     m_pXNetSock = new XNetSock(this);
     m_curIp = "192.168.10.1";
     m_curPort = 8000;
+    m_curSerial = "sz1234567890";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +27,7 @@ void XLogic::OnMessage(quint16 cmd, QByteArray payload)
 void XLogic::OnRecievedSerial(QByteArray payload)
 {
     QString serial(payload);
+    m_curSerial = serial;
     emit s_serial_recieved(serial);
     return;
 }
@@ -70,15 +72,30 @@ void XLogic::setCurPort(quint16 port)
     m_curPort = port;
 }
 
-
-void XLogic::BaseAngleRunTo(float angle)
+void XLogic::BaseAngleRunTo(double angle)
 {
+    // 将angle转换成7字节的字符串, 小数点前后各三位,加上小数点共7位
+    QString str = QString("%1").arg((double)angle, 7, 'f', 3, '0');
 
+    // 开始组合数据负载 12字节序列号 + 7字节角度
+    QByteArray payload;
+    payload.append(m_curSerial).append(str);
+    m_pXNetSock->WriteData(0x00, 0x00, payload);
 }
 
-void XLogic::NeckAngleRunTo(float angle)
+void XLogic::NeckAngleRunTo(double angle)
 {
+    QString str = QString("%1").arg((double)angle, 7, 'f', 3, '0');
+    QByteArray payload;
+    payload.append(m_curSerial).append(str);
+    m_pXNetSock->WriteData(0x00, 0x01, payload);
+}
 
+double XLogic::adjustAngleValue(double inputValue, float baseValue)
+{
+    int c = (int)(inputValue / baseValue);
+    double v = c * baseValue;
+    return v;
 }
 
 

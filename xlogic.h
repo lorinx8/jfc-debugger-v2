@@ -24,8 +24,12 @@ public:
     void ConnectHost(const QString &ip, quint16 port);
     void ConnectHost();
     void DisConnectHost();
-    void BaseAngleRunTo(float angle);
-    void NeckAngleRunTo(float angle);
+    void BaseAngleRunTo(double angle);
+    void NeckAngleRunTo(double angle);
+
+    // 两个角度值只接受某个数的整数倍, 此函数将输入的double值调整为最接近baseValue倍数的doubule值
+    double adjustAngleValue(double inputValue, float baseValue);
+
 signals:
 
     // 服务器连接成功后发出的信号
@@ -49,6 +53,8 @@ private:
     QString m_curIp;
     // 当前的端口
     quint16 m_curPort;
+    // 当前序列号
+    QString m_curSerial;
 
 };
 

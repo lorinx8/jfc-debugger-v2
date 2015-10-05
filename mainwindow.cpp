@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pLogic = new XLogic();
 
     // 控件初始化
-    ui->pushButton_baseAngelRun->setEnabled(false);
-    ui->pushButton_neckAngleRun->setEnabled(false);
+    ui->pushButton_baseAngelRun->setEnabled(true);
+    ui->pushButton_neckAngleRun->setEnabled(true);
     ui->pushButton_srvConnect->setEnabled(true);
     ui->pushButton_srvDisConnect->setEnabled(false);
 
@@ -121,30 +121,32 @@ void MainWindow::on_x_connect(bool ret)
     }
 }
 
-
 /*!
  * \brief 点击base角度运行到
  */
 void MainWindow::on_pushButton_baseAngelRun_clicked()
 {
-
+    on_doubleSpinBox_baseAngle_editingFinished();
+    double value = ui->doubleSpinBox_baseAngle->text().toDouble();
+    m_pLogic->BaseAngleRunTo(value);
 }
-
 
 /*!
  * \brief 点击neck角度运行到
  */
 void MainWindow::on_pushButton_neckAngleRun_clicked()
 {
-
+    on_doubleSpinBox_neckAngle_editingFinished();
+    double value = ui->doubleSpinBox_neckAngle->text().toDouble();
+    m_pLogic->NeckAngleRunTo(value);
 }
 
 // 这个必须是0.375的倍数，若被编辑后，应修改为最接近0.375的倍数值
 void MainWindow::on_doubleSpinBox_baseAngle_editingFinished()
 {
     double value = ui->doubleSpinBox_baseAngle->text().toDouble();
-    int c = (int)(value / 0.375f);
-    double v = c * 0.375;
+    double step = ui->doubleSpinBox_baseAngle->singleStep();
+    double v = m_pLogic->adjustAngleValue(value, step);
     ui->doubleSpinBox_baseAngle->setValue(v);
 }
 
@@ -152,7 +154,9 @@ void MainWindow::on_doubleSpinBox_baseAngle_editingFinished()
 void MainWindow::on_doubleSpinBox_neckAngle_editingFinished()
 {
     double value = ui->doubleSpinBox_neckAngle->text().toDouble();
-    int c = (int)(value / 0.9f);
-    double v = c * 0.9;
+    double step = ui->doubleSpinBox_neckAngle->singleStep();
+    double v = m_pLogic->adjustAngleValue(value, step);
     ui->doubleSpinBox_neckAngle->setValue(v);
 }
+
+
