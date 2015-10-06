@@ -61,7 +61,6 @@ void XLogic::ConnectHost()
     m_pXNetSock->Connect(m_curIp, m_curPort);
 }
 
-
 void XLogic::setCurIp(const QString & ip)
 {
     m_curIp = ip;
@@ -89,6 +88,14 @@ void XLogic::NeckAngleRunTo(double angle)
     QByteArray payload;
     payload.append(m_curSerial).append(str);
     m_pXNetSock->WriteData(0x00, 0x01, payload);
+}
+
+void XLogic::screenShot()
+{
+    // 截屏仅发送设备串号, 通信类型为0002
+    QByteArray payload;
+    payload.append(m_curSerial);
+    m_pXNetSock->WriteData(0x00, 0x02, payload);
 }
 
 double XLogic::adjustAngleValue(double inputValue, float baseValue)

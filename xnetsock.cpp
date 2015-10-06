@@ -25,8 +25,9 @@ void XNetSock::Connect(const QString &ip, quint16 port)
     ret = m_pSock->waitForReadyRead();
     if (ret == true)
     {
-        QByteArray data = m_pSock->readAll();
-        OnRead(data);
+        OnRead();
+        // 连接readReady信号
+        connect(m_pSock, SIGNAL(readyRead()), this, SLOT(OnRead()));
     }
     // 连接的时候没有拿到序列号等信息，出错，并断开
     else
@@ -37,23 +38,13 @@ void XNetSock::Connect(const QString &ip, quint16 port)
 
 void XNetSock::DisConnect()
 {
+    disconnect(m_pSock, SIGNAL(readyRead()), this, SLOT(OnRead()));
     QAbstractSocket::SocketState state = m_pSock->state();
     if (state == QAbstractSocket::ConnectedState)
     {
         m_pSock->disconnectFromHost();
     }
     m_pLogic->OnDisConnected(true);
-}
-
-void XNetSock::OnRead(QByteArray data)
-{
-    quint16 cmd = 0;
-    QByteArray payload;
-    XParser::doParse(data, &cmd, payload);
-    if (m_pLogic != NULL)
-    {
-        m_pLogic->OnMessage(cmd, payload);
-    }
 }
 
 void XNetSock::WriteData(char cmd1, char cmd2, QByteArray payload)
@@ -66,4 +57,21 @@ void XNetSock::WriteData(char cmd1, char cmd2, QByteArray payload)
     {
         qDebug() << m_pSock->errorString();
     }
+}
+
+void XNetSock::DataHandle(QByteArray &data)
+{
+    quint16 cmd = 0;
+    QByteArray payload;
+    XParser::doParse(data, &cmd, payload);
+    if (m_pLogic != NULL)
+    {
+        m_pLogic->OnMessage(cmd, payload);
+    }
+}
+
+void XNetSock::OnRead()
+{
+    QByteArray data = m_pSock->readAll();
+    DataHandle(data);
 }

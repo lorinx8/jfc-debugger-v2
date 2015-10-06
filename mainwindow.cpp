@@ -160,3 +160,8 @@ void MainWindow::on_doubleSpinBox_neckAngle_editingFinished()
 }
 
 
+// 点击单次截屏
+void MainWindow::on_pushButton_singleScreenShot_clicked()
+{
+    m_pLogic->screenShot();
+}

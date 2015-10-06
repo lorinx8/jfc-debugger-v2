@@ -40,6 +40,8 @@ private slots:
 
     void on_doubleSpinBox_neckAngle_editingFinished();
 
+    void on_pushButton_singleScreenShot_clicked();
+
 private:
 
     Ui::MainWindow *ui;

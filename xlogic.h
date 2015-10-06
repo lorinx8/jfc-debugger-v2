@@ -21,11 +21,15 @@ public:
 
 public:
     // 界面调用
+    // 连接与断开服务器
     void ConnectHost(const QString &ip, quint16 port);
     void ConnectHost();
     void DisConnectHost();
+    // 角度
     void BaseAngleRunTo(double angle);
     void NeckAngleRunTo(double angle);
+    // 截屏
+    void screenShot();
 
     // 两个角度值只接受某个数的整数倍, 此函数将输入的double值调整为最接近baseValue倍数的doubule值
     double adjustAngleValue(double inputValue, float baseValue);

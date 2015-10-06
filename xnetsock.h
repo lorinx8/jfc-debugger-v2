@@ -7,8 +7,10 @@
 
 class XLogic;
 
-class XNetSock
+class XNetSock : public QObject
 {
+    Q_OBJECT
+
 public:
 
     XNetSock(XLogic *pLogic);
@@ -17,9 +19,14 @@ public:
 
     void DisConnect();
 
-    void OnRead(QByteArray data);
-
     void WriteData(char cmd1, char cmd2, QByteArray payload);
+private:
+
+    void DataHandle(QByteArray &data);
+
+private slots:
+
+    void OnRead();
 
 private:
 
