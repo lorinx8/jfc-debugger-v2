@@ -42,9 +42,12 @@ signals:
     void s_disconnected(bool ret);
     // 连接到服务器后发出的信号
     void s_serial_recieved(const QString &serial);
+    // 收到摄像头的图片后发出的信号
+    void s_camerashot_recieved(QByteArray &data);
 
 private:
     void OnRecievedSerial(QByteArray payload);
+    void OnRecievedCameraShot(QByteArray payload);
 
 public:
     void setCurIp(const QString & ip);

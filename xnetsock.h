@@ -34,6 +34,8 @@ private:
     quint16 m_port;
     QTcpSocket *m_pSock;
     XLogic *m_pLogic;
+
+    QByteArray m_fullData;
 };
 
 #endif // XNETSOCK_H

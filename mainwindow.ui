@@ -253,7 +253,7 @@
       <x>10</x>
       <y>400</y>
       <width>661</width>
-      <height>51</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="title">
@@ -262,7 +262,7 @@
     <widget class="QLabel" name="label_5">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>100</x>
        <y>20</y>
        <width>16</width>
        <height>16</height>
@@ -275,7 +275,7 @@
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>340</x>
        <y>20</y>
        <width>31</width>
        <height>16</height>
@@ -288,7 +288,7 @@
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>230</x>
        <y>20</y>
        <width>16</width>
        <height>16</height>
@@ -301,7 +301,7 @@
     <widget class="QLabel" name="label_8">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>480</x>
        <y>20</y>
        <width>41</width>
        <height>16</height>
@@ -311,10 +311,10 @@
       <string>Weight</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_CropX">
+    <widget class="QLineEdit" name="lineEdit_cropX">
      <property name="geometry">
       <rect>
-       <x>50</x>
+       <x>120</x>
        <y>20</y>
        <width>71</width>
        <height>20</height>
@@ -324,10 +324,10 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_2">
+    <widget class="QLineEdit" name="lineEdit_cropY">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>250</x>
        <y>20</y>
        <width>71</width>
        <height>20</height>
@@ -337,10 +337,10 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_3">
+    <widget class="QLineEdit" name="lineEdit_cropWidth">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>390</x>
        <y>20</y>
        <width>71</width>
        <height>20</height>
@@ -350,11 +350,89 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_4">
+    <widget class="QLineEdit" name="lineEdit_cropWeight">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>540</x>
        <y>20</y>
+       <width>71</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>59</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>剪裁区域</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>48</y>
+       <width>59</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>鼠标移动</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>50</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>50</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_mouseX">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>50</y>
+       <width>71</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_mouseY">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>49</y>
        <width>71</width>
        <height>20</height>
       </rect>
@@ -384,6 +462,15 @@
        <width>640</width>
        <height>360</height>
       </rect>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>640</width>
+       <height>360</height>
+      </size>
+     </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -523,10 +610,10 @@
   <tabstop>doubleSpinBox_neckAngle</tabstop>
   <tabstop>pushButton_baseAngelRun</tabstop>
   <tabstop>pushButton_neckAngleRun</tabstop>
-  <tabstop>lineEdit_CropX</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_4</tabstop>
+  <tabstop>lineEdit_cropX</tabstop>
+  <tabstop>lineEdit_cropY</tabstop>
+  <tabstop>lineEdit_cropWidth</tabstop>
+  <tabstop>lineEdit_cropWeight</tabstop>
   <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources/>

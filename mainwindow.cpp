@@ -1,5 +1,8 @@
 #include <QMessageBox>
-
+#include <QGraphicsScene>
+#include <QPixmap>
+#include <QEvent>
+#include <QMouseEvent>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -7,6 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    m_lastCropX = 0;
+    m_lastCropY = 0;
+
     ui->setupUi(this);
     m_pLogic = new XLogic();
 
@@ -23,7 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_pLogic, SIGNAL(s_disconnected(bool)), this, SLOT(on_x_disconnect(bool)));
     // 得到序列号
     connect(m_pLogic, SIGNAL(s_serial_recieved(const QString &)), this, SLOT(on_x_recieved_serial(const QString &)));
+    // 收到摄像头图片
+    connect(m_pLogic, SIGNAL(s_camerashot_recieved(QByteArray&)), this, SLOT(on_x_recieved_camerashot(QByteArray&)));
 
+    ui->graphicsView->installEventFilter(this);
+    ui->graphicsView->setScene(&m_scene);
 }
 
 MainWindow::~MainWindow()
@@ -81,7 +91,6 @@ void MainWindow::on_pushButton_srvDisConnect_clicked()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 自定义槽
-
 /*!
  * \brief 接受到序列号
  * \param serial
@@ -89,6 +98,18 @@ void MainWindow::on_pushButton_srvDisConnect_clicked()
 void MainWindow::on_x_recieved_serial(const QString &serial)
 {
     ui->label_serial->setText("设备序号: " + serial);
+}
+
+/*!
+ * \brief 接收到摄像头图片
+ * \param data
+ */
+void MainWindow::on_x_recieved_camerashot(QByteArray &data)
+{
+    QPixmap pixmap;
+    pixmap.loadFromData(data);
+    m_scene.addPixmap(pixmap);
+    ui->graphicsView->show();
 }
 
 /*!
@@ -159,9 +180,49 @@ void MainWindow::on_doubleSpinBox_neckAngle_editingFinished()
     ui->doubleSpinBox_neckAngle->setValue(v);
 }
 
-
 // 点击单次截屏
 void MainWindow::on_pushButton_singleScreenShot_clicked()
 {
     m_pLogic->screenShot();
+}
+
+// 主要用于监视图片空间是鼠标移动等事件
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    // 图片控件
+    if (obj == ui->graphicsView)
+    {
+        qDebug() << event->type();
+        if (event->type() == QEvent::MouseMove)
+        {
+            QMouseEvent* e = (QMouseEvent*)event;
+            QString xstr;
+            QString ystr;
+            xstr = QString("%1").arg(e->x());
+            ystr = QString("%1").arg(e->y());
+            qDebug() << xstr << ystr;
+            ui->lineEdit_mouseX->setText(xstr);
+            ui->lineEdit_mouseY->setText(ystr);
+        }
+        else if (event->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent* e = (QMouseEvent*)event;
+
+            int curX = e->x();
+            int curY = e->y();
+            ui->lineEdit_cropX->setText(QString("%1").arg(e->x() * 2));
+            ui->lineEdit_cropY->setText(QString("%1").arg(e->y() * 2));
+
+            if (curX >= m_lastCropX && curY >= m_lastCropY)
+            {
+                int width = curX - m_lastCropX;
+                int weight = curY - m_lastCropY;
+                ui->lineEdit_cropWidth->setText(QString("%1").arg(width * 2));
+                ui->lineEdit_cropWeight->setText(QString("%1").arg(weight * 2));
+            }
+            m_lastCropX = curX;
+            m_lastCropY = curY;
+        }
+    }
+    return QWidget::eventFilter(obj, event);
 }

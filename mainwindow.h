@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
 
 #include "xlogic.h"
 
@@ -27,6 +28,7 @@ private slots:
     void on_x_connect(bool ret);
     void on_x_disconnect(bool ret);
     void on_x_recieved_serial(const QString &serial);
+    void on_x_recieved_camerashot(QByteArray &data);
 
     void on_pushButton_srvConnect_clicked();
 
@@ -42,14 +44,17 @@ private slots:
 
     void on_pushButton_singleScreenShot_clicked();
 
+public slots:
+     bool eventFilter(QObject *,QEvent *);
+
 private:
 
     Ui::MainWindow *ui;
     XLogic *m_pLogic;
 
-
-
-
+    QGraphicsScene m_scene;
+    int m_lastCropX;
+    int m_lastCropY;
 };
 
 #endif // MAINWINDOW_H

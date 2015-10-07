@@ -21,15 +21,12 @@ void XLogic::OnMessage(quint16 cmd, QByteArray payload)
         OnRecievedSerial(payload);
         break;
     }
+    // 接受到图片以后
+    case 0x4001:
+    {
+        OnRecievedCameraShot(payload);
     }
-}
-
-void XLogic::OnRecievedSerial(QByteArray payload)
-{
-    QString serial(payload);
-    m_curSerial = serial;
-    emit s_serial_recieved(serial);
-    return;
+    }
 }
 
 void XLogic::OnConnected(bool ret)
@@ -42,6 +39,21 @@ void XLogic::OnDisConnected(bool ret)
     emit s_disconnected(ret);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void XLogic::OnRecievedSerial(QByteArray payload)
+{
+    QString serial(payload);
+    m_curSerial = serial;
+    emit s_serial_recieved(serial);
+    return;
+}
+
+void XLogic::OnRecievedCameraShot(QByteArray payload)
+{
+    emit s_camerashot_recieved(payload);
+    return;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 界面调用
