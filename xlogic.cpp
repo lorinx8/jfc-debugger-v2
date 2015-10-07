@@ -56,7 +56,8 @@ void XLogic::OnRecievedSerial(QByteArray payload)
 
 void XLogic::OnRecievedCameraShot(QByteArray payload)
 {
-    // 接收到的结果是
+    // 接收到的结果是 序列号(12字节) + 两个角度值(7+7) + 然后是图片
+    QByteArray picData;
     emit s_camerashot_recieved(payload);
     return;
 }
