@@ -76,9 +76,9 @@ void XNetSock::OnRead()
     QByteArray data = m_pSock->readAll();
 
     // 在此处需要进行连接包的处理,以便传递给DataHandle(data)函数的都是一个完整的数据包
-    // header 0x7F 0x55 2bytes
-    // command 2bytes
-    // payload length 4bytes
+    // header 0x7F 0x55 2bytes   0 1
+    // command 2bytes            2 3
+    // payload length 4bytes     4 5 6 7
     // payload
     // cs 1byte
     // end 0xBE 0xEF 2bytes

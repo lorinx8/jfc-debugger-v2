@@ -30,6 +30,8 @@ public:
     void NeckAngleRunTo(double angle);
     // 截屏
     void screenShot();
+    // 车牌识别
+    void plateCheck(int cropX, int cropY, int width, int weight);
 
     // 两个角度值只接受某个数的整数倍, 此函数将输入的double值调整为最接近baseValue倍数的doubule值
     double adjustAngleValue(double inputValue, float baseValue);
@@ -48,6 +50,7 @@ signals:
 private:
     void OnRecievedSerial(QByteArray payload);
     void OnRecievedCameraShot(QByteArray payload);
+    void OnRecievedPlateCheckResult(QByteArray payload);
 
 public:
     void setCurIp(const QString & ip);

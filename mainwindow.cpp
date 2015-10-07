@@ -10,8 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    m_lastCropX = 0;
-    m_lastCropY = 0;
+    m_ilastCropX = 0;
+    m_ilastCropY = 0;
+    m_bShotContinuous = fasle;
 
     ui->setupUi(this);
     m_pLogic = new XLogic();
@@ -110,6 +111,11 @@ void MainWindow::on_x_recieved_camerashot(QByteArray &data)
     pixmap.loadFromData(data);
     m_scene.addPixmap(pixmap);
     ui->graphicsView->show();
+
+    if (m_bShotContinuous == true)
+    {
+        m_pLogic->screenShot();
+    }
 }
 
 /*!
@@ -183,9 +189,38 @@ void MainWindow::on_doubleSpinBox_neckAngle_editingFinished()
 // 点击单次截屏
 void MainWindow::on_pushButton_singleScreenShot_clicked()
 {
+    if (m_bShotContinuous == true)
+    {
+        return;
+    }
     m_pLogic->screenShot();
 }
 
+// 单击连续截屏
+void MainWindow::on_pushButton_continuousScreenShot_clicked()
+{
+    // 连续截屏的方式为, 上一次截图完成, 显示完图片后, 则立刻开始下一次截屏
+    if (m_bShotContinuous == true)
+    {
+        m_bShotContinuous = false;
+        ui->pushButton_continuousScreenShot->setText("连续截图");
+    }
+    else
+    {
+        m_bShotContinuous = true;
+        ui->pushButton_continuousScreenShot->setText("停止截图");
+    }
+}
+
+// 单击车牌识别
+void MainWindow::on_pushButton_plateCheck_clicked()
+{
+
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 主要用于监视图片空间是鼠标移动等事件
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
@@ -213,16 +248,18 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
             ui->lineEdit_cropX->setText(QString("%1").arg(e->x() * 2));
             ui->lineEdit_cropY->setText(QString("%1").arg(e->y() * 2));
 
-            if (curX >= m_lastCropX && curY >= m_lastCropY)
+            if (curX >= m_ilastCropX && curY >= m_ilastCropY)
             {
-                int width = curX - m_lastCropX;
-                int weight = curY - m_lastCropY;
+                int width = curX - m_ilastCropX;
+                int weight = curY - m_ilastCropY;
                 ui->lineEdit_cropWidth->setText(QString("%1").arg(width * 2));
                 ui->lineEdit_cropWeight->setText(QString("%1").arg(weight * 2));
             }
-            m_lastCropX = curX;
-            m_lastCropY = curY;
+            m_ilastCropX = curX;
+            m_ilastCropY = curY;
         }
     }
     return QWidget::eventFilter(obj, event);
 }
+
+

@@ -5,7 +5,6 @@ XParser::XParser()
 
 }
 
-
 bool XParser::doParse(QByteArray src, quint16 *cmd, QByteArray &payload)
 {
     if (src.data()[0] != 0x7F || src.data()[1] != 0x55)
@@ -13,35 +12,31 @@ bool XParser::doParse(QByteArray src, quint16 *cmd, QByteArray &payload)
         return false;
     }
     quint16 type = src[2] << 8 | src[3];
-    quint16 c = src[4] << 8 | src[5];
-    for (int i = 0; i < c; ++i)
-    {
-        payload.append(src[6+i]);
-    }
-    *cmd = type;
-    return true;
-}
 
-bool XParser::doParseLong(QByteArray src, quint16 *cmd, QByteArray &payload)
-{
-    if (src.data()[0] != 0x7F || src.data()[1] != 0x55)
+    union unlen
     {
-        return false;
-    }
-    quint16 type = src[2] << 8 | src[3];
-    quint16 c = src[4] << 8 | src[5];
-    for (int i = 0; i < c; ++i)
+        quint32 n;
+        char c[4];
+    };
+
+    unlen uu;
+    uu.c[3] = src.at(4);
+    uu.c[2] = src.at(5);
+    uu.c[1] = src.at(6);
+    uu.c[0] = src.at(7);
+
+    for (int i = 0; i < uu.n; ++i)
     {
-        payload.append(src[6+i]);
+        payload.append(src[8+i]);
     }
     *cmd = type;
     return true;
 }
 
 // 将负载数据打包为可发送的数据包
-// header 0x7F 0x55 2bytes
-// command 2bytes
-// payload length 2bytes
+// header 0x7F 0x55 2bytes    0 1
+// command 2bytes             2 3
+// payload length 4bytes      4 5 6 7
 // payload
 // cs 1byte
 // end 0xBE 0xEF 2bytes
@@ -56,12 +51,14 @@ QByteArray XParser::packPayload(char cmd1, char cmd2, QByteArray &payload)
     ret.append(cmd2);
     union unlen
     {
-        quint16 n;
-        char c[2];
+        quint32 n;
+        char c[4];
     };
 
     unlen unn;
-    unn.n = (short)payload.size();
+    unn.n = payload.size();
+    ret.append(unn.c[3]);
+    ret.append(unn.c[2]);
     ret.append(unn.c[1]);
     ret.append(unn.c[0]);
     ret.append(payload);

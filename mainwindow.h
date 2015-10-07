@@ -44,6 +44,10 @@ private slots:
 
     void on_pushButton_singleScreenShot_clicked();
 
+    void on_pushButton_continuousScreenShot_clicked();
+
+    void on_pushButton_plateCheck_clicked();
+
 public slots:
      bool eventFilter(QObject *,QEvent *);
 
@@ -53,8 +57,10 @@ private:
     XLogic *m_pLogic;
 
     QGraphicsScene m_scene;
-    int m_lastCropX;
-    int m_lastCropY;
+    int m_ilastCropX;
+    int m_ilastCropY;
+
+    bool m_bShotContinuous;
 };
 
 #endif // MAINWINDOW_H

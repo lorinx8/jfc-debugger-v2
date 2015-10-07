@@ -26,6 +26,11 @@ void XLogic::OnMessage(quint16 cmd, QByteArray payload)
     {
         OnRecievedCameraShot(payload);
     }
+    // 接收到车牌返回结果后
+    case 0x4002:
+    {
+
+    }
     }
 }
 
@@ -51,8 +56,14 @@ void XLogic::OnRecievedSerial(QByteArray payload)
 
 void XLogic::OnRecievedCameraShot(QByteArray payload)
 {
+    // 接收到的结果是
     emit s_camerashot_recieved(payload);
     return;
+}
+
+void XLogic::OnRecievedPlateCheckResult(QByteArray payload)
+{
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,11 +121,24 @@ void XLogic::screenShot()
     m_pXNetSock->WriteData(0x00, 0x02, payload);
 }
 
+void XLogic::plateCheck(int cropX, int cropY, int width, int weight)
+{
+    // 通信类型 0003
+    // 设备串号 X	 Y W H
+    // 12      4 4 4 4
+    QByteArray payload;
+    payload.append(m_curSerial);
+    payload.append(QByteArray::number(cropX));
+    payload.append(QByteArray::number(cropY));
+    payload.append(QByteArray::number(width));
+    payload.append(QByteArray::number(weight));
+    m_pXNetSock->WriteData(0x00, 0x03, payload);
+}
+
 double XLogic::adjustAngleValue(double inputValue, float baseValue)
 {
     int c = (int)(inputValue / baseValue);
     double v = c * baseValue;
     return v;
 }
-
 
