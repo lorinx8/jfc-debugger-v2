@@ -3,11 +3,15 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QStandardItemModel>
+#include <QMap>
+#include <QList>
 
 #include "xlogic.h"
+#include "defines.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -17,6 +21,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+private:
+    void initGraphView();
+    void initSignal();
+    void initControl();
+    void initTableView();
 
 private:
     // 设置断开时候的控件状态
@@ -49,6 +59,10 @@ private slots:
 
     void on_pushButton_plateCheck_clicked();
 
+    void on_pushButton_saveCurAngle_clicked();
+
+    void on_pushButton_saveCurDevice_clicked();
+
 public slots:
      bool eventFilter(QObject *,QEvent *);
 
@@ -61,7 +75,12 @@ private:
     int m_ilastCropX;
     int m_ilastCropY;
 
+    QStandardItemModel m_tableModel;
+
     bool m_bShotContinuous;
+
+    QMap< QString, QList<AngleItem> > m_angelData;
+
 };
 
 #endif // MAINWINDOW_H

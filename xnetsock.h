@@ -20,6 +20,7 @@ public:
     void DisConnect();
 
     void WriteData(char cmd1, char cmd2, QByteArray payload);
+
 private:
 
     void DataHandle(QByteArray &data);
@@ -29,7 +30,6 @@ private slots:
     void OnRead();
 
 private:
-
     QString m_ip;
     quint16 m_port;
     QTcpSocket *m_pSock;

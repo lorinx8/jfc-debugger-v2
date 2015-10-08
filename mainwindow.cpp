@@ -3,6 +3,8 @@
 #include <QPixmap>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QDir>
+#include <QImage>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -10,19 +12,41 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    ui->setupUi(this);
+
     m_ilastCropX = 0;
     m_ilastCropY = 0;
     m_bShotContinuous = false;
-
-    ui->setupUi(this);
     m_pLogic = new XLogic();
 
-    // 控件初始化
-    ui->pushButton_baseAngelRun->setEnabled(true);
-    ui->pushButton_neckAngleRun->setEnabled(true);
-    ui->pushButton_srvConnect->setEnabled(true);
-    ui->pushButton_srvDisConnect->setEnabled(false);
+    initControl();
+    initSignal();
+    initGraphView();
+    initTableView();
+}
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::initGraphView()
+{
+    QDir dir;
+    QString path = dir.currentPath() + "/logo.jpg";
+    QImage orgImage;
+    QImage scaledImage;
+    orgImage.load(path);
+    scaledImage = orgImage.scaled(640, 360);
+    qDebug() << "load image file" << path;
+    ui->graphicsView->installEventFilter(this);
+    m_scene.addPixmap(QPixmap::fromImage(scaledImage));
+    ui->graphicsView->setScene(&m_scene);
+    ui->graphicsView->show();
+}
+
+void MainWindow::initSignal()
+{
     // signal
     // 连接
     connect(m_pLogic, SIGNAL(s_connected(bool)), this, SLOT(on_x_connect(bool)));
@@ -32,15 +56,38 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_pLogic, SIGNAL(s_serial_recieved(const QString &)), this, SLOT(on_x_recieved_serial(const QString &)));
     // 收到摄像头图片
     connect(m_pLogic, SIGNAL(s_camerashot_recieved(QByteArray&)), this, SLOT(on_x_recieved_camerashot(QByteArray&)));
-
-    ui->graphicsView->installEventFilter(this);
-    ui->graphicsView->setScene(&m_scene);
 }
 
-MainWindow::~MainWindow()
+void MainWindow::initControl()
 {
-    delete ui;
+    // 控件初始化
+    ui->pushButton_baseAngelRun->setEnabled(true);
+    ui->pushButton_neckAngleRun->setEnabled(true);
+    ui->pushButton_srvConnect->setEnabled(true);
+    ui->pushButton_srvDisConnect->setEnabled(false);
 }
+
+void MainWindow::initTableView()
+{
+    m_tableModel.setColumnCount(7);
+
+    m_tableModel.setHeaderData(0, Qt::Horizontal, "序号");
+    m_tableModel.setHeaderData(1, Qt::Horizontal, "B角度");
+    m_tableModel.setHeaderData(2, Qt::Horizontal, "N角度");
+
+    m_tableModel.setHeaderData(3, Qt::Horizontal, "剪裁X");
+    m_tableModel.setHeaderData(4, Qt::Horizontal, "剪裁Y");
+    m_tableModel.setHeaderData(5, Qt::Horizontal, "剪裁宽");
+    m_tableModel.setHeaderData(6, Qt::Horizontal, "剪裁高");
+    ui->tableView->setModel(&m_tableModel);
+
+    //设置列宽不可变
+    for (int i = 0; i < 7; ++i)
+    {
+        ui->tableView->setColumnWidth(i, 80);
+    }
+}
+
 
 // 设置断开时候的控件状态
 void MainWindow::setDisConnectControlState()
@@ -67,7 +114,6 @@ void MainWindow::setConnectControlState()
     ui->pushButton_baseAngelRun->setEnabled(true);
     ui->pushButton_neckAngleRun->setEnabled(true);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -222,16 +268,53 @@ void MainWindow::on_pushButton_continuousScreenShot_clicked()
     {
         m_bShotContinuous = true;
         ui->pushButton_continuousScreenShot->setText("停止截图");
+        m_pLogic->screenShot();
     }
 }
 
 // 单击车牌识别
 void MainWindow::on_pushButton_plateCheck_clicked()
 {
-
+    int cropX = ui->lineEdit_cropX->text().toInt();
+    int cropY = ui->lineEdit_cropY->text().toInt();
+    int cropWidth = ui->lineEdit_cropWidth->text().toInt();
+    int cropWeight = ui->lineEdit_cropWeight->text().toInt();
+    m_pLogic->plateCheck(cropX, cropY, cropWidth, cropWeight);
 }
 
+// 单击写入当前设备某角度值
+void MainWindow::on_pushButton_saveCurAngle_clicked()
+{
+    // 得到两个角度值
+    double baseAngle = ui->doubleSpinBox_baseAngle->text().toDouble();
+    double neckAngle = ui->doubleSpinBox_neckAngle->text().toDouble();
 
+    // 得到截屏数据
+    int cropX = ui->lineEdit_cropX->text().toInt();
+    int cropY = ui->lineEdit_cropY->text().toInt();
+    int cropWidth = ui->lineEdit_cropWidth->text().toInt();
+    int cropWeight = ui->lineEdit_cropWeight->text().toInt();
+
+    AngleItem item(baseAngle, neckAngle, cropX, cropY, cropWidth, cropWeight);
+
+    if (m_angelData.contains(m_pLogic->m_curSerial))
+    {
+        QList<AngleItem> ls = m_angelData.value(m_pLogic->m_curSerial);
+        ls.append(item);
+    }
+    else
+    {
+        QList<AngleItem> ls;
+        ls.append(item);
+        m_angelData.insert(m_pLogic->m_curSerial, ls);
+    }
+}
+
+// 单击写入当前设备值到文件
+void MainWindow::on_pushButton_saveCurDevice_clicked()
+{
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 主要用于监视图片空间是鼠标移动等事件
@@ -240,7 +323,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     // 图片控件
     if (obj == ui->graphicsView)
     {
-        qDebug() << event->type();
+        // qDebug() << event->type();
         if (event->type() == QEvent::MouseMove)
         {
             QMouseEvent* e = (QMouseEvent*)event;
@@ -248,7 +331,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
             QString ystr;
             xstr = QString("%1").arg(e->x());
             ystr = QString("%1").arg(e->y());
-            qDebug() << xstr << ystr;
+            // qDebug() << xstr << ystr;
             ui->lineEdit_mouseX->setText(xstr);
             ui->lineEdit_mouseY->setText(ystr);
         }
@@ -274,5 +357,4 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     }
     return QWidget::eventFilter(obj, event);
 }
-
 

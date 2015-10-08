@@ -59,8 +59,13 @@ public:
     void setCurPort(quint16 port);
 
 private:
+    // 一些数据转换函数
+    QByteArray int32ToBigendianByteArray(int num);
+
+private:
     XNetSock *m_pXNetSock;
 
+public:
     // 当前的IP
     QString m_curIp;
     // 当前的端口

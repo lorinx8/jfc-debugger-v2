@@ -107,6 +107,24 @@ void XLogic::setCurPort(quint16 port)
     m_curPort = port;
 }
 
+// 数据转换， int型转换为4字节，大端字节序
+QByteArray XLogic::int32ToBigendianByteArray(int num)
+{
+    union unn
+    {
+        int n;
+        char c[4];
+    };
+    unn unnn;
+    unnn.n = num;
+    QByteArray ret;
+    ret.append(unnn.c[3]);
+    ret.append(unnn.c[2]);
+    ret.append(unnn.c[1]);
+    ret.append(unnn.c[0]);
+    return ret;
+}
+
 void XLogic::BaseAngleRunTo(double angle)
 {
     // 将angle转换成7字节的字符串, 小数点前后各三位,加上小数点共7位
@@ -141,10 +159,11 @@ void XLogic::plateCheck(int cropX, int cropY, int width, int weight)
     // 12      4 4 4 4
     QByteArray payload;
     payload.append(m_curSerial);
-    payload.append(QByteArray::number(cropX));
-    payload.append(QByteArray::number(cropY));
-    payload.append(QByteArray::number(width));
-    payload.append(QByteArray::number(weight));
+    payload.append(int32ToBigendianByteArray(cropX));
+    payload.append(int32ToBigendianByteArray(cropY));
+    payload.append(int32ToBigendianByteArray(width));
+    payload.append(int32ToBigendianByteArray(weight));
+
     m_pXNetSock->WriteData(0x00, 0x03, payload);
 }
 
@@ -154,4 +173,6 @@ double XLogic::adjustAngleValue(double inputValue, float baseValue)
     double v = c * baseValue;
     return v;
 }
+
+
 
