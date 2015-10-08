@@ -16,7 +16,7 @@ public:
     // 供网络层的回调
     void OnConnected(bool ret);
     void OnDisConnected(bool ret);
-    void OnMessage(quint16 cmd, QByteArray payload);
+    void OnMessage(quint16 cmd, QByteArray &payload);
     // 供网络层的回调结束
 
 public:
@@ -46,11 +46,13 @@ signals:
     void s_serial_recieved(const QString &serial);
     // 收到摄像头的图片后发出的信号
     void s_camerashot_recieved(QByteArray &data);
+    // 接收到车牌识别结果后, 发出的信号
+    void s_plate_check_result(int plateCount, const QString &plateResult);
 
 private:
-    void OnRecievedSerial(QByteArray payload);
-    void OnRecievedCameraShot(QByteArray payload);
-    void OnRecievedPlateCheckResult(QByteArray payload);
+    void OnRecievedSerial(QByteArray &payload);
+    void OnRecievedCameraShot(QByteArray &payload);
+    void OnRecievedPlateCheckResult(QByteArray &payload);
 
 public:
     void setCurIp(const QString & ip);

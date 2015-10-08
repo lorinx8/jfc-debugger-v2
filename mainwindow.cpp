@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     m_ilastCropX = 0;
     m_ilastCropY = 0;
-    m_bShotContinuous = fasle;
+    m_bShotContinuous = false;
 
     ui->setupUi(this);
     m_pLogic = new XLogic();
@@ -115,6 +115,19 @@ void MainWindow::on_x_recieved_camerashot(QByteArray &data)
     if (m_bShotContinuous == true)
     {
         m_pLogic->screenShot();
+    }
+}
+
+void MainWindow::on_x_plate_check_result(int plateCount, const QString &plateResult)
+{
+    // 车牌识别结果
+    if (plateCount == 0)
+    {
+        ui->label_plateResult->setText("未识别到车牌");
+    }
+    else
+    {
+        ui->label_plateResult->setText(plateResult);
     }
 }
 

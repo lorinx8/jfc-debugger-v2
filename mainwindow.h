@@ -29,6 +29,7 @@ private slots:
     void on_x_disconnect(bool ret);
     void on_x_recieved_serial(const QString &serial);
     void on_x_recieved_camerashot(QByteArray &data);
+    void on_x_plate_check_result(int plateCount, const QString &plateResult);
 
     void on_pushButton_srvConnect_clicked();
 

@@ -11,7 +11,7 @@ XLogic::XLogic()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 供网络层的回调
 
-void XLogic::OnMessage(quint16 cmd, QByteArray payload)
+void XLogic::OnMessage(quint16 cmd, QByteArray &payload)
 {
     switch(cmd)
     {
@@ -46,7 +46,7 @@ void XLogic::OnDisConnected(bool ret)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void XLogic::OnRecievedSerial(QByteArray payload)
+void XLogic::OnRecievedSerial(QByteArray &payload)
 {
     QString serial(payload);
     m_curSerial = serial;
@@ -54,17 +54,29 @@ void XLogic::OnRecievedSerial(QByteArray payload)
     return;
 }
 
-void XLogic::OnRecievedCameraShot(QByteArray payload)
+void XLogic::OnRecievedCameraShot(QByteArray &payload)
 {
     // 接收到的结果是 序列号(12字节) + 两个角度值(7+7) + 然后是图片
-    QByteArray picData;
+    // 发送给界面的删掉前面的字节
+    payload.remove(0, 26);
     emit s_camerashot_recieved(payload);
     return;
 }
 
-void XLogic::OnRecievedPlateCheckResult(QByteArray payload)
+void XLogic::OnRecievedPlateCheckResult(QByteArray &payload)
 {
-
+    // 接受到的数据是, 设备串号(12)字节, 然后是识别到的车牌个数(1字节), 然后是车牌号码
+    int num = (int)payload.at(13);
+    int n = payload.size();
+    if (num > 0)
+    {
+        QString palteStr = QString(payload.right(n - 13));
+        emit s_plate_check_result(num, palteStr);
+    }
+    else
+    {
+        emit s_plate_check_result(0, "");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
