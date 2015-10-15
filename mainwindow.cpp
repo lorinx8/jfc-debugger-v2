@@ -8,6 +8,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
+// 图片高宽等常量
+const int kPicWidth_s = 640;
+const int kPicWeight_s = 360;
+const int kPicWidth_org = 1280;
+const int kPicWeight_org = 720;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -37,7 +44,7 @@ void MainWindow::initGraphView()
     QImage orgImage;
     QImage scaledImage;
     orgImage.load(path);
-    scaledImage = orgImage.scaled(640, 360);
+    scaledImage = orgImage.scaled(kPicWidth_s, kPicWeight_s);
     qDebug() << "load image file" << path;
     ui->graphicsView->installEventFilter(this);
     m_scene.addPixmap(QPixmap::fromImage(scaledImage));
@@ -155,7 +162,8 @@ void MainWindow::on_x_recieved_camerashot(QByteArray &data)
 {
     QPixmap pixmap;
     pixmap.loadFromData(data);
-    m_scene.addPixmap(pixmap);
+    QPixmap pixmap_s = pixmap.scaled(kPicWidth_s, kPicWeight_s);
+    m_scene.addPixmap(pixmap_s);
     ui->graphicsView->show();
 
     if (m_bShotContinuous == true)

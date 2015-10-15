@@ -64,6 +64,6 @@ QByteArray XParser::packPayload(char cmd1, char cmd2, QByteArray &payload)
     ret.append(payload);
     ret.append(0x01);
     ret.append(0xBE);
-    ret.append(0xEE);
+    ret.append(0xEF);
     return ret;
 }

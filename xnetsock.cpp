@@ -93,7 +93,7 @@ void XNetSock::OnRead()
     char e1 = 0xBE;
     char e2 = 0xEF;
     // 是完整的一个包
-    if (n >= minSize && data.at(0) == h1 && data.at(1) == h2 && data.at(n-2) == e1 && data.at(n-2) == e2)
+    if (n >= minSize && data.at(0) == h1 && data.at(1) == h2 && data.at(n-2) == e1 && data.at(n-1) == e2)
     {
         DataHandle(data);
         return;
@@ -107,7 +107,7 @@ void XNetSock::OnRead()
         m_fullData.append(data);
     }
     // 2. 如果是结尾包(注意, 由于实际使用的场景, 不存在上一个数据包的最后一部分和新数据包的第一部分相连的情况, 所以就简单处理了)
-    else if (n >=2 && data.at(n-2) == e1 && data.at(n-2) == e2)
+    else if (n >=2 && data.at(n-2) == e1 && data.at(n-1) == e2)
     {
         m_fullData.append(data);
         DataHandle(m_fullData);
