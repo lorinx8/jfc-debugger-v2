@@ -28,6 +28,9 @@ private:
     void initControl();
     void initTableView();
 
+    void onClickPic(int x, int y);
+    void showAngleTable(QList<AngleItem> &data);
+
 private:
     // 设置断开时候的控件状态
     void setDisConnectControlState();

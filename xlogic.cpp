@@ -25,11 +25,13 @@ void XLogic::OnMessage(quint16 cmd, QByteArray &payload)
     case 0x4001:
     {
         OnRecievedCameraShot(payload);
+        break;
     }
     // 接收到车牌返回结果后
     case 0x4002:
     {
-
+        OnRecievedPlateCheckResult(payload);
+        break;
     }
     }
 }

@@ -63,6 +63,8 @@ void MainWindow::initSignal()
     connect(m_pLogic, SIGNAL(s_serial_recieved(const QString &)), this, SLOT(on_x_recieved_serial(const QString &)));
     // 收到摄像头图片
     connect(m_pLogic, SIGNAL(s_camerashot_recieved(QByteArray&)), this, SLOT(on_x_recieved_camerashot(QByteArray&)));
+    // 收到车牌识别结果
+    connect(m_pLogic, SIGNAL(s_plate_check_result(int,QString)), this, SLOT(on_x_plate_check_result(int,QString)));
 }
 
 void MainWindow::initControl()
@@ -94,7 +96,6 @@ void MainWindow::initTableView()
         ui->tableView->setColumnWidth(i, 80);
     }
 }
-
 
 // 设置断开时候的控件状态
 void MainWindow::setDisConnectControlState()
@@ -286,8 +287,13 @@ void MainWindow::on_pushButton_plateCheck_clicked()
     int cropX = ui->lineEdit_cropX->text().toInt();
     int cropY = ui->lineEdit_cropY->text().toInt();
     int cropWidth = ui->lineEdit_cropWidth->text().toInt();
-    int cropWeight = ui->lineEdit_cropWeight->text().toInt();
-    m_pLogic->plateCheck(cropX, cropY, cropWidth, cropWeight);
+    int cropHeight = ui->lineEdit_cropHeight->text().toInt();
+    if (cropWidth == 0 || cropHeight == 0)
+    {
+        QMessageBox::warning(0, "错误", "截图区域不正确", 0, 0);
+        return;
+    }
+    m_pLogic->plateCheck(cropX, cropY, cropWidth, cropHeight);
 }
 
 // 单击写入当前设备某角度值
@@ -301,24 +307,26 @@ void MainWindow::on_pushButton_saveCurAngle_clicked()
     int cropX = ui->lineEdit_cropX->text().toInt();
     int cropY = ui->lineEdit_cropY->text().toInt();
     int cropWidth = ui->lineEdit_cropWidth->text().toInt();
-    int cropWeight = ui->lineEdit_cropWeight->text().toInt();
+    int cropWeight = ui->lineEdit_cropHeight->text().toInt();
 
     AngleItem item(baseAngle, neckAngle, cropX, cropY, cropWidth, cropWeight);
 
     if (m_angelData.contains(m_pLogic->m_curSerial))
     {
-        QList<AngleItem> ls = m_angelData.value(m_pLogic->m_curSerial);
-        ls.append(item);
+        m_angelData[m_pLogic->m_curSerial].append(item);
+        showAngleTable(m_angelData[m_pLogic->m_curSerial]);
     }
     else
     {
         QList<AngleItem> ls;
         ls.append(item);
         m_angelData.insert(m_pLogic->m_curSerial, ls);
+        showAngleTable(ls);
     }
-}
+
 
 // 单击写入当前设备值到文件
+}
 void MainWindow::on_pushButton_saveCurDevice_clicked()
 {
 
@@ -346,23 +354,67 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         else if (event->type() == QEvent::MouseButtonPress)
         {
             QMouseEvent* e = (QMouseEvent*)event;
-
             int curX = e->x();
             int curY = e->y();
-            ui->lineEdit_cropX->setText(QString("%1").arg(e->x() * 2));
-            ui->lineEdit_cropY->setText(QString("%1").arg(e->y() * 2));
-
-            if (curX >= m_ilastCropX && curY >= m_ilastCropY)
-            {
-                int width = curX - m_ilastCropX;
-                int weight = curY - m_ilastCropY;
-                ui->lineEdit_cropWidth->setText(QString("%1").arg(width * 2));
-                ui->lineEdit_cropWeight->setText(QString("%1").arg(weight * 2));
-            }
-            m_ilastCropX = curX;
-            m_ilastCropY = curY;
+            onClickPic(curX, curY);
         }
     }
     return QWidget::eventFilter(obj, event);
 }
+
+// 在图片上点击了， 用来处理屏幕截取的区域等等
+void MainWindow::onClickPic(int curX, int curY)
+{
+    if (curX < m_ilastCropX || curY < m_ilastCropY)
+    {
+        ui->lineEdit_cropX->setText(QString("%1").arg(curX * 2));
+        ui->lineEdit_cropY->setText(QString("%1").arg(curY * 2));
+        ui->lineEdit_cropXEnd->setText("0");
+        ui->lineEdit_cropYEnd->setText("0");
+        ui->lineEdit_cropWidth->setText("0");
+        ui->lineEdit_cropHeight->setText("0");
+    }
+    else if (curX >= m_ilastCropX && curY >= m_ilastCropY)
+    {
+        int width = curX - m_ilastCropX;
+        int height = curY - m_ilastCropY;
+        ui->lineEdit_cropWidth->setText(QString("%1").arg(width * 2));
+        ui->lineEdit_cropHeight->setText(QString("%1").arg(height * 2));
+
+        ui->lineEdit_cropX->setText(QString("%1").arg(m_ilastCropX * 2));
+        ui->lineEdit_cropY->setText(QString("%1").arg(m_ilastCropY * 2));
+        ui->lineEdit_cropXEnd->setText(QString("%1").arg(curX * 2));
+        ui->lineEdit_cropYEnd->setText(QString("%1").arg(curY * 2));
+    }
+
+    m_ilastCropX = curX;
+    m_ilastCropY = curY;
+}
+
+
+// 在表中显示角度值
+void MainWindow::showAngleTable(QList<AngleItem> &data)
+{
+    // "序号"
+    // "B角度"
+    // "N角度"
+    // "剪裁X"
+    // "剪裁Y"
+    // "剪裁宽"
+    // "剪裁高"
+    m_tableModel.removeRows(0, m_tableModel.rowCount());
+    // 清空表中内容
+    for (int i = 0; i < data.size(); ++i)
+    {
+        const AngleItem &item = data.at(i);
+        m_tableModel.setItem(i, 0, new QStandardItem(QString("%1").arg(i+1)));
+        m_tableModel.setItem(i, 1, new QStandardItem(QString("%1").arg(item.baseAngle)));
+        m_tableModel.setItem(i, 2, new QStandardItem(QString("%1").arg(item.neckAngle)));
+        m_tableModel.setItem(i, 3, new QStandardItem(QString("%1").arg(item.cropX)));
+        m_tableModel.setItem(i, 4, new QStandardItem(QString("%1").arg(item.cropY)));
+        m_tableModel.setItem(i, 5, new QStandardItem(QString("%1").arg(item.cropWidth)));
+        m_tableModel.setItem(i, 6, new QStandardItem(QString("%1").arg(item.cropHeight)));
+    }
+}
+
 

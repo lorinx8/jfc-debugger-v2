@@ -10,7 +10,7 @@ typedef struct st_angle_item
     int cropX;
     int cropY;
     int cropWidth;
-    int cropWeight;
+    int cropHeight;
     st_angle_item()
     {
         baseAngle = 0.0;
@@ -18,10 +18,10 @@ typedef struct st_angle_item
         cropX = 0;
         cropY = 0;
         cropWidth = 0;
-        cropWeight = 0;
+        cropHeight = 0;
     }
     st_angle_item(double _baseAngle, double _neckAngle, int _cropX, int _cropY, int _cropWidth, int _cropWeight) :
-        baseAngle(_baseAngle), neckAngle(_neckAngle), cropX(_cropX), cropY(_cropY), cropWidth(_cropWidth), cropWeight(_cropWeight)
+        baseAngle(_baseAngle), neckAngle(_neckAngle), cropX(_cropX), cropY(_cropY), cropWidth(_cropWidth), cropHeight(_cropWeight)
     {
 
     }

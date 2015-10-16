@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>987</width>
-    <height>603</height>
+    <width>977</width>
+    <height>635</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>JFC调试器</string>
@@ -262,63 +268,66 @@
     <widget class="QLabel" name="label_5">
      <property name="geometry">
       <rect>
-       <x>27</x>
-       <y>22</y>
-       <width>16</width>
-       <height>16</height>
+       <x>16</x>
+       <y>20</y>
+       <width>21</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>X</string>
+      <string>X_S</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
-       <x>172</x>
-       <y>21</y>
-       <width>31</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Width</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_7">
-     <property name="geometry">
-      <rect>
-       <x>99</x>
+       <x>305</x>
        <y>22</y>
        <width>16</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Y</string>
+      <string>W</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>86</x>
+       <y>22</y>
+       <width>21</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y_S</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_8">
      <property name="geometry">
       <rect>
-       <x>276</x>
-       <y>21</y>
-       <width>41</width>
+       <x>370</x>
+       <y>22</y>
+       <width>16</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Weight</string>
+      <string>H</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_cropX">
      <property name="geometry">
       <rect>
-       <x>41</x>
+       <x>36</x>
        <y>20</y>
        <width>40</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -327,11 +336,14 @@
     <widget class="QLineEdit" name="lineEdit_cropY">
      <property name="geometry">
       <rect>
-       <x>113</x>
+       <x>108</x>
        <y>20</y>
        <width>40</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -340,24 +352,88 @@
     <widget class="QLineEdit" name="lineEdit_cropWidth">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>319</x>
        <y>20</y>
        <width>40</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_cropWeight">
+    <widget class="QLineEdit" name="lineEdit_cropHeight">
      <property name="geometry">
       <rect>
-       <x>321</x>
+       <x>384</x>
        <y>20</y>
        <width>40</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>159</x>
+       <y>20</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X_E</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>20</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y_E</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_cropXEnd">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>20</y>
+       <width>40</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_cropYEnd">
+     <property name="geometry">
+      <rect>
+       <x>251</x>
+       <y>20</y>
+       <width>40</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -623,7 +699,7 @@
       <x>10</x>
       <y>470</y>
       <width>671</width>
-      <height>101</height>
+      <height>141</height>
      </rect>
     </property>
    </widget>
@@ -633,7 +709,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>987</width>
+     <width>977</width>
      <height>23</height>
     </rect>
    </property>
@@ -652,7 +728,7 @@
   <tabstop>lineEdit_cropX</tabstop>
   <tabstop>lineEdit_cropY</tabstop>
   <tabstop>lineEdit_cropWidth</tabstop>
-  <tabstop>lineEdit_cropWeight</tabstop>
+  <tabstop>lineEdit_cropHeight</tabstop>
   <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources/>
