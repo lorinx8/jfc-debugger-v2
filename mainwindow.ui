@@ -660,7 +660,7 @@
       <x>690</x>
       <y>404</y>
       <width>281</width>
-      <height>51</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="title">
@@ -690,6 +690,19 @@
      </property>
      <property name="text">
       <string>写入当前设备结果</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_savePic">
+     <property name="geometry">
+      <rect>
+       <x>6</x>
+       <y>50</y>
+       <width>141</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>当前截图保存</string>
      </property>
     </widget>
    </widget>
